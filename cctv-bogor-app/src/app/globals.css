@@ -1,0 +1,493 @@
+@import "tailwindcss";
+/* Import Leaflet CSS */
+@import 'leaflet/dist/leaflet.css';
+/* Import MarkerCluster CSS */
+@import 'leaflet.markercluster/dist/MarkerCluster.css';
+@import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Leaflet popup custom styles */
+.leaflet-popup-content-wrapper {
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  padding: 0;
+  max-height: 70vh;
+  overflow-y: auto;
+  min-width: 300px;
+  max-width: 450px;
+}
+
+.leaflet-popup-content {
+  margin: 0;
+  max-width: 100%;
+  width: 100%;
+}
+
+.leaflet-popup-tip {
+  background: #0f172a;
+}
+
+/* Mobile responsive popup styles */
+@media (max-width: 640px) {
+  .leaflet-popup-content-wrapper {
+    min-width: 280px !important;
+    max-width: calc(100vw - 32px) !important;
+    max-height: 85vh !important;
+    border-radius: 1rem;
+    margin: 0 auto;
+    pointer-events: auto !important;
+  }
+  
+  .leaflet-popup-content {
+    min-width: 280px !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+  }
+  
+  .leaflet-popup {
+    margin-bottom: 16px !important;
+  }
+  
+  /* Force proper video sizing on mobile */
+  .leaflet-popup-content-wrapper video,
+  .leaflet-popup-content-wrapper .video-container {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  /* Prevent accidental map clicks from closing popup */
+  .leaflet-popup-content * {
+    pointer-events: auto !important;
+  }
+  
+  /* Video styling for mobile */
+  .aspect-video {
+    aspect-ratio: 16/9 !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+  
+  .aspect-video video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    border-radius: 0.5rem;
+  }
+  
+  /* Ensure video containers don't overflow */
+  .leaflet-popup-content-wrapper .aspect-video {
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+}
+
+/* Desktop and tablet video styling */
+@media (min-width: 641px) {
+  .aspect-video {
+    aspect-ratio: 16/9 !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+  
+  .aspect-video video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    border-radius: 0.5rem;
+  }
+}
+
+/* Video container general fixes */
+.leaflet-popup .aspect-video {
+  position: relative !important;
+  overflow: hidden !important;
+  border-radius: 0.5rem !important;
+}
+
+.leaflet-popup .aspect-video video {
+  display: block !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+}
+
+/* Desktop responsive popup styles */
+@media (min-width: 1025px) {
+  .leaflet-popup-content-wrapper {
+    min-width: 380px !important;
+    max-width: 450px !important;
+    max-height: 70vh !important;
+  }
+  
+  .leaflet-popup-content {
+    min-width: 380px !important;
+    max-width: 450px !important;
+  }
+}
+
+.custom-marker {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* Custom CCTV Marker Styles */
+.custom-cctv-marker {
+  background: none !important;
+  border: none !important;
+}
+
+.cctv-marker-container {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.cctv-marker-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  z-index: 100;
+}
+
+.cctv-marker-icon:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 101;
+}
+
+/* Add a small pointer at the bottom */
+.cctv-marker-pointer {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 8px solid #10b981;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
+}
+
+/* Additional mobile video fixes */
+@media (max-width: 640px) {
+  .aspect-video {
+    aspect-ratio: 16/9 !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+  
+  .aspect-video video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    border-radius: 0.5rem;
+  }
+  
+  /* Ensure video containers don't overflow */
+  .leaflet-popup-content-wrapper .aspect-video {
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+}
+
+/* Custom marker styles to prevent flickering */
+.custom-marker {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  will-change: auto;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  position: relative !important;
+  transition: transform 0.2s ease-out;
+  z-index: 1000;
+}
+
+.custom-marker .marker-wrapper {
+  will-change: auto;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  transition: transform 0.2s ease-out;
+  pointer-events: auto;
+}
+
+.custom-marker:hover {
+  z-index: 1001;
+}
+
+.custom-marker:hover .marker-wrapper {
+  transform: scale(1.1) translateZ(0);
+}
+
+/* Prevent marker redraw flicker */
+.leaflet-marker-icon {
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  position: relative !important;
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Prevent clustering animations from causing flicker */
+.leaflet-cluster-anim .leaflet-marker-icon, 
+.leaflet-cluster-anim .leaflet-marker-shadow {
+  transition: none !important;
+  animation: none !important;
+  transform: translateZ(0) !important;
+}
+
+/* Disable all leaflet animations that cause flicker */
+.leaflet-zoom-anim .leaflet-zoom-animated {
+  transition: none !important;
+}
+
+/* Improve popup performance and stability */
+.leaflet-popup {
+  will-change: auto;
+  backface-visibility: hidden;
+  pointer-events: auto;
+}
+
+.custom-popup .leaflet-popup-content-wrapper {
+  animation: popupFadeIn 0.2s ease-out;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.custom-popup .leaflet-popup-tip {
+  background: #0f172a;
+}
+
+/* Stable popup animation */
+@keyframes popupFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Enhanced CCTV Marker hover effects */
+.cctv-marker {
+  cursor: pointer !important;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.cctv-marker:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 4px 8px rgba(16, 185, 129, 0.3));
+  z-index: 1000 !important;
+}
+
+/* Prevent hover flicker on marker wrapper */
+.marker-wrapper {
+  pointer-events: auto !important;
+  transition: all 0.2s ease;
+}
+
+.marker-wrapper:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Analysis card styles matching the original HTML */
+.analysis-card {
+  background-color: #0f172a;
+  border: 1px solid #1e293b;
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 8px;
+}
+
+.traffic-status-badge {
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: white;
+  display: inline-block;
+}
+
+.status-lancar { 
+  background-color: #10b981; 
+}
+
+.status-ramai { 
+  background-color: #f59e0b; 
+}
+
+.status-padat { 
+  background-color: #ef4444; 
+}
+
+.analysis-section {
+  display: flex;
+  align-items: flex-start;
+  margin-top: 12px;
+}
+
+.analysis-section-icon {
+  flex-shrink: 0;
+  margin-right: 8px;
+  color: #6b7280;
+}
+
+.analysis-section-title {
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: #6b7280;
+  text-transform: uppercase;
+}
+
+.analysis-section-content {
+  font-size: 0.9rem;
+  color: #1f2937;
+}
+
+.analysis-section-content ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.analysis-section-content li {
+  margin-top: 4px;
+}
+
+.analysis-section-content a {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.analysis-section-content a:hover {
+  text-decoration: underline;
+}
+
+/* Spinner for loading */
+.loader {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #10b981;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+  margin: 10px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Prevent popup auto-close on mobile */
+.custom-popup-modern {
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+}
+
+.custom-popup-modern .leaflet-popup-content-wrapper {
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+  background: rgba(15, 23, 42, 0.98) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+}
+
+.custom-popup-modern .leaflet-popup-content {
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: auto !important;
+  min-width: 300px !important;
+  max-width: 450px !important;
+}
+
+/* Enhanced mobile popup behavior */
+@media (max-width: 640px) {
+  .custom-popup-modern {
+    z-index: 1000 !important;
+  }
+  
+  .custom-popup-modern .leaflet-popup-content-wrapper {
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+    position: relative !important;
+  }
+  
+  .custom-popup-modern .leaflet-popup-content {
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+    width: 100% !important;
+    min-width: 280px !important;
+    max-width: 400px !important;
+  }
+  
+  /* Force popup content to capture all touch events */
+  .custom-popup-modern .leaflet-popup-content * {
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+  }
+  
+  /* Prevent map interaction behind popup */
+  .leaflet-popup-pane .leaflet-popup {
+    pointer-events: auto !important;
+  }
+  
+  /* Overlay to prevent accidental clicks behind popup */
+  .custom-popup-modern::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.1);
+    z-index: -1;
+    pointer-events: auto;
+  }
+  
+  /* Video and button interactions */
+  .custom-popup-modern video,
+  .custom-popup-modern button,
+  .custom-popup-modern a {
+    touch-action: manipulation !important;
+    pointer-events: auto !important;
+  }
+}

@@ -1,0 +1,15 @@
+🚦 Info Traffic Update - Tugu Kujang
+
+📊 Status: Lancar
+🔍 Penyebab: Kondisi lalu lintas terpantau lancar karena bukan jam sibuk dan hari kerja telah usai
+
+🛣️ Jalur Alternatif:
+1. Jl. Pajajaran - Jl. Raya Bogor Jakarta (10 menit)
+   Rute utama menuju Jakarta. Alternatif jika ingin menghindari pusat kota
+2. Jl. Juanda - Jl. Raya Ciawi (15 menit)
+   Rute menuju Ciawi dan area selatan Bogor
+
+💡 Rekomendasi: Lalu lintas lancar, manfaatkan untuk perjalanan lebih cepat
+⏰ Jam Sibuk: 07:00-09:00, 16:00-19:00
+
+🌐 Pantau traffic real-time di: https://cctv-bogor-gv89yflsx-aldiramdhans-projects.vercel.app

@@ -1,0 +1,41 @@
+# ── macOS ─────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ── IDE ───────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+
+# ── Personal / academic documents (not for source control) ────
+*.docx
+*.pdf
+[UNTUK*
+UTS_*
+*Proposal*
+
+# ── Python ────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# ── Secrets ───────────────────────────────────────────────────
+.env
+!.env.example
+credentials.json
+*.json.key
+
+# ── Node / Next.js ────────────────────────────────────────────
+node_modules/
+.next/
+*.tsbuildinfo
+.vercel/
+out/
+
+# ── Misc ──────────────────────────────────────────────────────
+assignment/
+*.log
