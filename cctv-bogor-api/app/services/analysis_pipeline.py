@@ -1,6 +1,4 @@
 import asyncio
-import json
-from datetime import datetime, timezone
 
 import redis.asyncio as aioredis
 from sqlalchemy import select, func
@@ -8,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.models.db_models import CCTVPoint, AnalysisHistory
-from app.models.schemas import AnalyzeRequest, AnalyzeResponse, GeminiAnalysisInput, AlternativeRoute
+from app.models.schemas import AnalyzeRequest, AnalyzeResponse, GeminiAnalysisInput
 from app.services import cache_service, vertex_service
 from app.services.gemini_service import analyze_traffic
 from app.services.traffic_labeler import label_traffic_density
@@ -22,7 +20,6 @@ async def _get_next_cctv(db: AsyncSession, current_order: int) -> CCTVPoint | No
 
 async def _save_history(
     db: AsyncSession,
-    req: AnalyzeRequest,
     current: CCTVPoint,
     next_cctv: CCTVPoint | None,
     vehicle_count: int,
@@ -30,6 +27,7 @@ async def _save_history(
     automl_raw: list[dict],
     density_label: str,
     next_density_label: str | None,
+    frame_captured: bool,
     response: AnalyzeResponse,
 ) -> None:
     try:
@@ -45,6 +43,7 @@ async def _save_history(
             alternative_routes=[r.model_dump() for r in response.alternative_routes],
             traffic_label=response.traffic_label,
             peak_hours=response.peak_hours,
+            frame_captured=frame_captured,
         )
         db.add(record)
         await db.commit()
@@ -68,10 +67,10 @@ async def run_analysis(
     if current is None:
         raise ValueError(f"CCTV '{req.cctvId}' not found in database")
 
-    # ── 3. Load next CCTV in sequence ─────────────────────────────────────
+    # ── 3. Load next CCTV in sequence ──────────────────────────────────────
     next_cctv = await _get_next_cctv(db, current.sequence_order)
 
-    # ── 4. Capture frames concurrently (one frame each, timeout 8s) ────────
+    # ── 4. Capture frames concurrently ─────────────────────────────────────
     current_frame, next_frame = await asyncio.gather(
         vertex_service.capture_frame(current.stream_url),
         vertex_service.capture_frame(next_cctv.stream_url) if next_cctv else asyncio.sleep(0, result=None),
@@ -80,22 +79,24 @@ async def run_analysis(
     # ── 5. Run AutoML Vision concurrently ──────────────────────────────────
     current_automl, next_automl = await asyncio.gather(
         vertex_service.predict_vehicles(current_frame, current.nama),
-        vertex_service.predict_vehicles(next_frame, next_cctv.nama) if next_cctv else asyncio.sleep(
-            0, result=vertex_service._mock_result(req.locationName)
-        ),
+        vertex_service.predict_vehicles(next_frame, next_cctv.nama) if next_cctv
+        else asyncio.sleep(0, result=vertex_service._mock_result(req.locationName)),
     )
 
-    # ── 6. Apply threshold algorithm → density labels ─────────────────────
+    # ── 6. Threshold algorithm → density labels ────────────────────────────
     density_label = label_traffic_density(
         current_automl.vehicle_count, current.threshold_low, current.threshold_high
     )
-    next_density_label = label_traffic_density(
-        next_automl.vehicle_count,
-        next_cctv.threshold_low if next_cctv else current.threshold_low,
-        next_cctv.threshold_high if next_cctv else current.threshold_high,
-    ) if next_automl else None
+    next_density_label = (
+        label_traffic_density(
+            next_automl.vehicle_count,
+            next_cctv.threshold_low if next_cctv else current.threshold_low,
+            next_cctv.threshold_high if next_cctv else current.threshold_high,
+        )
+        if next_automl else None
+    )
 
-    # ── 7. Gemini analysis ────────────────────────────────────────────────
+    # ── 7. Gemini analysis ─────────────────────────────────────────────────
     gemini_input = GeminiAnalysisInput(
         location_name=current.nama,
         lat=current.lat,
@@ -108,13 +109,14 @@ async def run_analysis(
     )
     response = await analyze_traffic(gemini_input, settings.gemini_api_key)
 
-    # ── 8. Persist history (fire-and-forget) ──────────────────────────────
+    # ── 8. Persist history (fire-and-forget) ───────────────────────────────
     asyncio.create_task(_save_history(
-        db, req, current, next_cctv,
+        db, current, next_cctv,
         current_automl.vehicle_count,
         next_automl.vehicle_count if next_automl else None,
         current_automl.raw_detections,
         density_label, next_density_label,
+        current_automl.frame_captured,
         response,
     ))
 

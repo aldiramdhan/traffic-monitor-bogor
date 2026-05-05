@@ -8,3 +8,4 @@ sqlalchemy[asyncio]==2.0.36
 asyncpg==0.30.0
 redis[hiredis]==5.2.1
 google-cloud-aiplatform==1.74.0
+Pillow==11.1.0

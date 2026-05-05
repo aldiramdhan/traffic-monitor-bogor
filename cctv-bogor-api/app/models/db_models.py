@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from sqlalchemy import String, Integer, Float, Text, DateTime, CheckConstraint, UniqueConstraint
+from sqlalchemy import Boolean, String, Integer, Float, Text, DateTime, CheckConstraint
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 from app.database import Base
@@ -54,6 +54,9 @@ class AnalysisHistory(Base):
     alternative_routes: Mapped[dict] = mapped_column(JSONB, nullable=False)
     traffic_label: Mapped[str] = mapped_column(String(8), nullable=False)
     peak_hours: Mapped[str | None] = mapped_column(String(16))
+
+    # Whether a real CCTV frame was captured (False = mock/fallback data)
+    frame_captured: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
     analyzed_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)

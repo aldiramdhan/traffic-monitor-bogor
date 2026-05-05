@@ -1,4 +1,6 @@
+from datetime import datetime
 from typing import Literal, Optional
+from uuid import UUID
 from pydantic import BaseModel
 from dataclasses import dataclass
 
@@ -33,6 +35,7 @@ class AnalyzeRequest(BaseModel):
 
 class AutoMLResult(BaseModel):
     vehicle_count: int
+    frame_captured: bool          # False when using mock data
     raw_detections: list[dict]
 
 
@@ -70,3 +73,20 @@ class AnalyzeResponse(BaseModel):
     cached: bool
     timestamp: str
     # vehicle_count, density_label, automl_raw → intentionally excluded
+
+
+# ── History record (GET /api/history) ────────────────────────────────────────
+
+class HistoryRecord(BaseModel):
+    id: UUID
+    cctv_id: Optional[str]
+    vehicle_count: int
+    next_vehicle_count: Optional[int]
+    density_label: str
+    next_density_label: Optional[str]
+    traffic_label: str
+    recommendation: str
+    alternative_routes: list[dict]
+    peak_hours: Optional[str]
+    frame_captured: bool
+    analyzed_at: datetime
