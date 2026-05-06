@@ -2,226 +2,55 @@ import { CCTVLocation } from '@/types'
 
 export const cctvLocations: CCTVLocation[] = [
   {
-    id: 'btm-juanda',
-    nama: 'Simpang BTM Arah Juanda',
-    lat: -6.604264,
-    lon: 106.796570,
-    stream_url: 'https://restreamer.kotabogor.go.id/memfs/7f86312d-fc35-4700-9bd1-2a624b13d111.m3u8',
-    status: 'online',
-    description: 'Persimpangan BTM menuju arah Juanda, area komersial yang ramai'
-  },
-  {
     id: 'tugu-kujang',
     nama: 'Tugu Kujang',
-    lat: -6.601312,
-    lon: 106.805363,
+    lat: -6.600791,
+    lon: 106.805229,
     stream_url: 'https://restreamer.kotabogor.go.id/memfs/aedb3f80-3355-411f-a8fa-08320766c07a.m3u8',
     status: 'online',
     description: 'Landmark utama Kota Bogor, area wisata dan pusat aktivitas'
   },
   {
-    id: 'jembatan-otista',
-    nama: 'Jembatan Otista',
-    lat: -6.601881,
-    lon: 106.803268,
-    stream_url: 'https://restreamer.kotabogor.go.id/memfs/1dd9dac0-e6db-40b6-ae39-59717fdeeeb7.m3u8',
+    id: 'depan-kantor-pos',
+    nama: 'Depan Kantor Pos',
+    lat: -6.600123,
+    lon: 106.794764,
+    stream_url: 'https://restreamer.kotabogor.go.id/memfs/7f86312d-fc35-4700-9bd1-2a624b13d111.m3u8',
     status: 'online',
-    description: 'Jembatan strategis di Jalan Otista, penghubung utama kota'
+    description: 'Area depan Kantor Pos Besar Bogor, Jalan Ir. H. Juanda'
   },
   {
-    id: 'depan-alun-alun',
-    nama: 'Simpang Kapten Muslihat-Djuanda',
-    lat: -6.596225338711321,
-    lon: 106.79109351852293,
+    id: 'jl-juanda-kapten-muslihat',
+    nama: 'Jl. Juanda Arah Kapten Muslihat',
+    lat: -6.598047,
+    lon: 106.794007,
     stream_url: 'https://restreamer2.kotabogor.go.id/memfs/3ec6eaf2-4da1-4adb-8c15-0251e69121d6.m3u8',
     status: 'online',
-    description: 'Simpang kapten Muslihat menuju arah Djuanda'
+    description: 'Jalan Juanda menuju arah Jalan Kapten Muslihat, persimpangan strategis'
   },
   {
-    id: 'arah-ciheuleut',
-    nama: 'Arah Ciheuleut',
-    lat: -6.607753,
-    lon: 106.809851,
-    stream_url: 'https://restreamer.kotabogor.go.id/memfs/e167c204-5ff8-4f58-ad24-50f4fd2ef004.m3u8',
-    status: 'online',
-    description: 'Jalur menuju Ciheuleut, area perumahan dan pendidikan'
-  },
-  {
-    id: 'lawang-gintung',
-    nama: 'Simpang Tiga Lawang Gintung',
-    lat: -6.619962,
-    lon: 106.814478,
-    stream_url: 'https://restreamer.kotabogor.go.id/memfs/8be48917-2090-4de7-aa35-7c01d28e16be.m3u8',
-    status: 'online',
-    description: 'Persimpangan tiga menuju Lawang Gintung, area perumahan'
-  },
-  {
-    id: 'masjid-raya',
-    nama: 'Depan Masjid Raya',
-    lat: -6.606982,
-    lon: 106.809107,
-    stream_url: 'https://restreamer.kotabogor.go.id/memfs/0da67044-cfaa-4ba1-be9a-795fc0c23ea1.m3u8',
-    status: 'online',
-    description: 'Area depan Masjid Raya Bogor, pusat keagamaan kota'
-  },
-  {
-    id: 'gang-aut',
-    nama: 'Gang Aut',
-    lat: -6.605546,
-    lon: 106.800369,
-    stream_url: 'https://restreamer.kotabogor.go.id/memfs/b7e99f5a-85a1-48be-b06f-65904cd5fa7e.m3u8',
-    status: 'online',
-    description: 'Area Gang Aut, jalur alternatif dalam kota'
-  },
-  {
-    id: 'dishub-ciawi',
-    nama: 'Depan Dishub ke arah Ciawi',
-    lat: -6.629362,
-    lon: 106.824026,
-    stream_url: 'https://restreamer.kotabogor.go.id/memfs/1a250cb5-3fb7-41c8-962d-5a3fe2540ae8.m3u8',
-    status: 'online',
-    description: 'Area Dishub menuju Ciawi, jalur keluar kota'
-  },
-  {
-    id: 'pancasan-empang',
-    nama: 'Simpang Tiga Pancasan Arah Jalan Empang Pasir Kuda',
-    lat: -6.607058,
-    lon: 106.791719,
-    stream_url: 'https://restreamer.kotabogor.go.id/memfs/6515d5ea-e7b3-4824-b123-f8c9ebec562e.m3u8',
-    status: 'online',
-    description: 'Persimpangan Pancasan menuju Empang, area perumahan'
-  },
-  {
-    id: 'empang-bnr',
-    nama: 'Simpang Empang arah BNR',
-    lat: -6.607742,
-    lon: 106.795125,
-    stream_url: 'https://restreamer.kotabogor.go.id/memfs/9257bf6b-389c-424d-8eff-771add34d205.m3u8',
-    status: 'online',
-    description: 'Persimpangan Empang menuju BNR, jalur strategis'
-  },
-  {
-    id: 'empang-pancasan',
-    nama: 'Simpang Empang arah Pancasan',
-    lat: -6.607723,
-    lon: 106.795001,
-    stream_url: 'https://restreamer.kotabogor.go.id/memfs/7cf529b4-19f1-4af5-ba43-fe6f370360b7.m3u8',
-    status: 'online',
-    description: 'Persimpangan Empang menuju Pancasan, area residensial'
-  },
-  {
-    id: 'bundaran-ekalokasari',
-    nama: 'Bundaran Ekalokasari',
-    lat: -6.621153,
-    lon: 106.816292,
-    stream_url: 'https://restreamer.kotabogor.go.id/memfs/cfb39fd8-855b-4253-80e3-f25c6e3f5b75.m3u8',
-    status: 'online',
-    description: 'Bundaran utama Ekalokasari, simpul lalu lintas penting'
-  },
-  {
-    id: 'arah-surya-kencana',
-    nama: 'Arah Surya Kencana',
-    lat: -6.604239,
-    lon: 106.799412,
-    stream_url: 'https://restreamer.kotabogor.go.id/memfs/3b117452-5d6e-4291-9500-0ac9294532f4.m3u8',
-    status: 'online',
-    description: 'Jalur menuju Surya Kencana, area komersial'
-  },
-  {
-    id: 'pedati-lawang-gintung',
-    nama: 'Pedati Arah Lawang Gintung',
-    lat: -6.604000,
-    lon: 106.799291,
-    stream_url: 'https://restreamer.kotabogor.go.id/memfs/8ca5344d-e8a4-4d31-89e1-08a90fd946bf.m3u8',
-    status: 'online',
-    description: 'Jalan Pedati menuju Lawang Gintung'
-  },
-  {
-    id: 'surken-lawang-seketeng',
-    nama: 'Surken Arah Lawang Seketeng',
-    lat: -6.604020,
-    lon: 106.798726,
-    stream_url: 'https://restreamer.kotabogor.go.id/memfs/6d054ad5-615c-4102-959c-cbb3052f60fc.m3u8',
-    status: 'online',
-    description: 'Surya Kencana menuju Lawang Seketeng'
-  },
-  {
-    id: 'pedati-surya-kencana',
-    nama: 'Pedati Arah Surya Kencana',
-    lat: -6.604597,
-    lon: 106.798990,
-    stream_url: 'https://restreamer.kotabogor.go.id/memfs/01ef5275-d900-495d-af21-16b8dbdf5527.m3u8',
-    status: 'online',
-    description: 'Jalan Pedati menuju Surya Kencana'
-  },
-  {
-    id: 'simpang-denpom',
-    nama: 'Simpang Denpom',
-    lat: -6.593143,
-    lon: 106.797045,
-    stream_url: 'https://restreamer.kotabogor.go.id/memfs/35336564-5b50-489b-a746-5e2ab3a5d023.m3u8',
-    status: 'online',
-    description: 'Persimpangan area Denpom, jalur militer'
-  },
-  {
-    id: 'simpang-rs-salak',
-    nama: 'Simpang RS Salak',
-    lat: -6.591861,
-    lon: 106.797203,
-    stream_url: 'https://restreamer.kotabogor.go.id/memfs/e24f5b08-0783-417c-ac7c-9d92f546abe9.m3u8',
-    status: 'online',
-    description: 'Persimpangan RS Salak, area kesehatan'
-  },
-  {
-    id: 'jalan-surya-kencana',
-    nama: 'Jalan Surya Kencana',
-    lat: -6.605511,
-    lon: 106.800327,
-    stream_url: 'https://restreamer.kotabogor.go.id/memfs/c6700d06-4fc7-4814-9569-84238dd80064.m3u8',
-    status: 'online',
-    description: 'Jalan Surya Kencana, pusat wisata kuliner'
-  },
-  {
-    id: 'jalan-sukasari',
-    nama: 'Jalan Sukasari',
-    lat: -6.618312,
-    lon: 106.814777,
-    stream_url: 'https://restreamer.kotabogor.go.id/memfs/a9090a08-fac4-4c24-9cf3-8ab9a116e93f.m3u8',
-    status: 'online',
-    description: 'Jalan Sukasari, area perumahan'
-  },
-  {
-    id: 'jalan-jalak-harupat',
-    nama: 'Jalan Jalak Harupat',
-    lat: -6.592707,
-    lon: 106.801952,
-    stream_url: 'https://restreamer.kotabogor.go.id/memfs/c048edf7-bce5-4bd2-8329-668ee45734b8.m3u8',
-    status: 'online',
-    description: 'Jalan Jalak Harupat, area residensial'
-  },
-  {
-    id: 'alun-alun-bri',
-    nama: 'Alun-alun depan BRI',
-    lat: -6.59516362181941,
-    lon: 106.79184351740201,
+    id: 'depan-balaikota',
+    nama: 'Depan Balaikota Bogor',
+    lat: -6.595156,
+    lon: 106.794334,
     stream_url: 'https://restreamer.kotabogor.go.id/memfs/fe1d07cb-9634-4364-bd1c-6846cbce67ef.m3u8',
     status: 'online',
-    description: 'Area Alun-alun depan Bank BRI'
+    description: 'Area depan Balaikota Bogor, pusat pemerintahan Kota Bogor'
   },
   {
-    id: 'alun-alun-shelter',
-    nama: 'Alun-alun Shelter',
-    lat: -6.593952065500943,
-    lon: 106.7921049595227,
-    stream_url: 'https://restreamer.kotabogor.go.id/memfs/c99660a9-dcf0-4478-82a3-1fbe56d64a18.m3u8',
+    id: 'jl-pajajaran',
+    nama: 'Jalan Pajajaran',
+    lat: -6.592915,
+    lon: 106.802377,
+    stream_url: 'https://restreamer.kotabogor.go.id/memfs/c048edf7-bce5-4bd2-8329-668ee45734b8.m3u8',
     status: 'online',
-    description: 'Area shelter Alun-alun, tempat istirahat pengunjung'
-  }
+    description: 'Jalan Pajajaran, jalur utama penghubung utara Kota Bogor'
+  },
 ]
 
 export const bogorMapConfig = {
-  center: [-6.605, 106.801] as [number, number],
-  zoom: 14,
+  center: [-6.5985, 106.797] as [number, number],
+  zoom: 16,
   minZoom: 11,
   maxZoom: 18
 }

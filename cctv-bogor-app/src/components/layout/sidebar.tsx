@@ -1,213 +1,214 @@
 'use client'
 
 import React, { useEffect } from 'react'
-import { X, Video, Eye, AlertCircle, Zap, MapPin, Activity, Info } from 'lucide-react'
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import {
+  Video, Eye, AlertCircle, Zap, MapPin, Activity, Info,
+  ChevronRight, ChevronLeft, Camera, Layers, Settings
+} from 'lucide-react'
 import { cctvLocations } from '@/data/cctv-locations'
 
 interface SidebarProps {
   isOpen: boolean
-  onClose: () => void
+  onToggle: () => void
   onLocationSelect?: (lat: number, lon: number, id: string) => void
 }
 
-export function Sidebar({ isOpen, onClose, onLocationSelect }: SidebarProps) {
+export function Sidebar({ isOpen, onToggle, onLocationSelect }: SidebarProps) {
   const onlineCount = cctvLocations.filter(cctv => cctv.status === 'online').length
   const maintenanceCount = cctvLocations.filter(cctv => cctv.status === 'maintenance').length
 
-  // Handle ESC key to close sidebar
+  // ESC to collapse
   useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isOpen) {
-        onClose()
-      }
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) onToggle()
     }
+    window.addEventListener('keydown', handleEscape)
+    return () => window.removeEventListener('keydown', handleEscape)
+  }, [isOpen, onToggle])
 
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape)
-      // Prevent body scroll when sidebar is open
-      document.body.style.overflow = 'hidden'
-    }
-
-    return () => {
-      document.removeEventListener('keydown', handleEscape)
-      document.body.style.overflow = 'unset'
-    }
-  }, [isOpen, onClose])
+  const navIcons = [
+    { icon: Camera,  label: 'Kamera CCTV' },
+    { icon: Layers,  label: 'Layer Peta' },
+    { icon: Activity, label: 'Statistik' },
+    { icon: Settings, label: 'Pengaturan' },
+  ]
 
   return (
     <>
-      {/* Mobile Overlay */}
-      {isOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden cursor-pointer backdrop-blur-sm animate-in fade-in duration-300"
-          onClick={onClose}
-          aria-label="Tutup panel informasi"
-          title="Klik untuk menutup"
-        />
-      )}
-      
       {/* Sidebar */}
-      <aside 
+      <aside
         className={`
-          fixed top-0 right-0 h-full bg-slate-900 border-l border-slate-800 z-50 
-          w-80 lg:w-96 overflow-y-auto shadow-xl
-          transition-transform duration-300 ease-in-out
-          ${isOpen ? 'translate-x-0' : 'translate-x-full'}
+          fixed top-0 left-0 h-full z-50
+          flex flex-col
+          bg-[#0d1b2e]/95 backdrop-blur-md
+          border-r border-blue-900/40
+          shadow-2xl
+          transition-all duration-300 ease-in-out
+          ${isOpen ? 'w-72' : 'w-14'}
         `}
       >
-        <div className="sticky top-0 bg-slate-900 border-b border-slate-800 p-4 z-10">
-          {/* Header */}
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-slate-50">Panel Informasi</h2>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={onClose}
-              title="Tutup panel informasi"
-              className="h-9 w-9 p-0 hover:bg-red-950/50 hover:text-red-400 text-slate-400 hover:border-red-900/50 border border-transparent transition-all duration-200 rounded-full bg-slate-800 hover:shadow-md"
+        {/* Logo / Collapse Toggle */}
+        <div className={`flex items-center h-14 border-b border-blue-900/40 flex-shrink-0 ${isOpen ? 'px-4 justify-between' : 'justify-center'}`}>
+          {isOpen && (
+            <div className="flex items-center gap-2 overflow-hidden">
+              <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center flex-shrink-0">
+                <MapPin className="h-4 w-4 text-white" />
+              </div>
+              <div className="leading-tight overflow-hidden">
+                <p className="text-xs font-bold text-white truncate">Traffic Monitor</p>
+                <p className="text-[10px] text-blue-400 truncate">Kota Bogor</p>
+              </div>
+            </div>
+          )}
+          <button
+            onClick={onToggle}
+            className="w-8 h-8 rounded-lg hover:bg-blue-900/40 flex items-center justify-center text-blue-400 hover:text-blue-200 transition-colors flex-shrink-0"
+            title={isOpen ? 'Tutup panel' : 'Buka panel'}
+          >
+            {isOpen ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+          </button>
+        </div>
+
+        {/* Live badge */}
+        <div className={`flex items-center gap-2 px-3 py-2 border-b border-blue-900/40 flex-shrink-0 ${!isOpen && 'justify-center'}`}>
+          <div className="flex items-center gap-1.5">
+            <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+            {isOpen && <span className="text-xs font-semibold text-blue-300">LIVE</span>}
+          </div>
+          {isOpen && (
+            <span className="text-xs text-blue-400 ml-auto">
+              <span className="font-bold text-white">{onlineCount}</span>/{cctvLocations.length} online
+            </span>
+          )}
+        </div>
+
+        {/* Nav icons (always visible) */}
+        <div className={`flex flex-col gap-1 py-2 px-2 border-b border-blue-900/40 flex-shrink-0`}>
+          {navIcons.map(({ icon: Icon, label }) => (
+            <button
+              key={label}
+              title={label}
+              className={`
+                flex items-center gap-3 rounded-lg px-2 py-2
+                text-blue-400 hover:text-white hover:bg-blue-800/40
+                transition-all duration-150
+                ${!isOpen && 'justify-center'}
+              `}
             >
-              <X className="h-5 w-5" />
-            </Button>
-          </div>
+              <Icon className="h-4 w-4 flex-shrink-0" />
+              {isOpen && <span className="text-xs font-medium truncate">{label}</span>}
+            </button>
+          ))}
         </div>
 
-        <div className="p-4 space-y-4">
+        {/* Expanded content */}
+        {isOpen && (
+          <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-900 scrollbar-track-transparent">
+            <div className="p-3 space-y-4">
 
-          {/* Statistics Cards */}
-          <div className="space-y-3">
-            <h3 className="text-sm font-medium text-slate-300 flex items-center gap-2">
-              <Activity className="h-4 w-4" />
-              Statistik CCTV
-            </h3>
-            
-            <div className="grid grid-cols-2 gap-3">
-              <Card className="p-3">
-                <div className="flex items-center justify-between">
-                  <Video className="h-4 w-4 text-slate-400" />
-                  <span className="text-xs text-slate-400">Total</span>
-                </div>
-                <div className="text-xl font-bold mt-1 text-slate-50">{cctvLocations.length}</div>
-              </Card>
-
-              <Card className="p-3">
-                <div className="flex items-center justify-between">
-                  <Eye className="h-4 w-4 text-emerald-500" />
-                  <span className="text-xs text-slate-400">Online</span>
-                </div>
-                <div className="text-xl font-bold text-emerald-500 mt-1">{onlineCount}</div>
-              </Card>
-
-              <Card className="p-3">
-                <div className="flex items-center justify-between">
-                  <AlertCircle className="h-4 w-4 text-yellow-500" />
-                  <span className="text-xs text-slate-400">Maintenance</span>
-                </div>
-                <div className="text-xl font-bold text-yellow-500 mt-1">{maintenanceCount}</div>
-              </Card>
-
-              <Card className="p-3">
-                <div className="flex items-center justify-between">
-                  <Zap className="h-4 w-4 text-blue-500" />
-                  <span className="text-xs text-slate-400">AI Ready</span>
-                </div>
-                <div className="text-xl font-bold text-blue-500 mt-1">Ready</div>
-              </Card>
-            </div>
-          </div>
-
-          {/* CCTV Online List */}
-          <div className="space-y-3">
-            <h3 className="text-sm font-medium text-slate-300 flex items-center gap-2">
-              <MapPin className="h-4 w-4" />
-              CCTV Online ({onlineCount})
-            </h3>
-            
-            <div className="space-y-2 max-h-64 overflow-y-auto sidebar-scroll">
-              {cctvLocations
-                .filter(cctv => cctv.status === 'online')
-                .map((cctv) => (
-                <Card 
-                  key={cctv.id} 
-                  className="p-3 cursor-pointer hover:bg-slate-800 hover:border-emerald-600/50 transition-all duration-200 hover:shadow-md active:scale-[0.98]"
-                  onClick={() => {
-                    onLocationSelect?.(cctv.lat, cctv.lon, cctv.id)
-                    onClose()
-                  }}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-sm text-slate-50 truncate">
-                        {cctv.nama}
-                      </h4>
-                      <p className="text-xs text-slate-400 truncate mt-1">
-                        {cctv.description}
-                      </p>
+              {/* Stats */}
+              <div>
+                <p className="text-[10px] font-semibold text-blue-500 uppercase tracking-widest mb-2 flex items-center gap-1">
+                  <Activity className="h-3 w-3" /> Statistik CCTV
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { label: 'Total', value: cctvLocations.length, icon: Video, color: 'text-blue-400' },
+                    { label: 'Online', value: onlineCount, icon: Eye, color: 'text-blue-300' },
+                    { label: 'Maint.', value: maintenanceCount, icon: AlertCircle, color: 'text-amber-400' },
+                    { label: 'AI Ready', value: '✓', icon: Zap, color: 'text-blue-400' },
+                  ].map(({ label, value, icon: Icon, color }) => (
+                    <div key={label} className="bg-blue-950/40 border border-blue-900/40 rounded-xl p-3">
+                      <div className="flex items-center justify-between mb-1">
+                        <Icon className={`h-3.5 w-3.5 ${color}`} />
+                        <span className="text-[10px] text-blue-500">{label}</span>
+                      </div>
+                      <div className={`text-lg font-bold ${color}`}>{value}</div>
                     </div>
-                    <div className="ml-2 flex-shrink-0 flex items-center gap-2">
-                      <Badge variant="success" className="text-xs px-1">
-                        ● Online
-                      </Badge>
-                      <MapPin className="h-3 w-3 text-emerald-500" />
-                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* CCTV List */}
+              <div>
+                <p className="text-[10px] font-semibold text-blue-500 uppercase tracking-widest mb-2 flex items-center gap-1">
+                  <MapPin className="h-3 w-3" /> CCTV Online ({onlineCount})
+                </p>
+                <div className="space-y-1.5">
+                  {cctvLocations
+                    .filter(cctv => cctv.status === 'online')
+                    .map((cctv) => (
+                      <button
+                        key={cctv.id}
+                        className="w-full text-left bg-blue-950/30 border border-blue-900/30 hover:border-blue-600/60 hover:bg-blue-900/30 rounded-xl p-3 transition-all duration-200 group"
+                        onClick={() => onLocationSelect?.(cctv.lat, cctv.lon, cctv.id)}
+                      >
+                        <div className="flex items-start gap-2">
+                          <div className="mt-0.5 w-5 h-5 rounded-full bg-blue-600/20 border border-blue-600/40 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-600/40 transition-colors">
+                            <Video className="h-2.5 w-2.5 text-blue-400" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-semibold text-slate-100 truncate group-hover:text-white">{cctv.nama}</p>
+                            <p className="text-[10px] text-blue-500 truncate mt-0.5">{cctv.description}</p>
+                          </div>
+                          <div className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse mt-1.5 flex-shrink-0" />
+                        </div>
+                      </button>
+                    ))}
+                </div>
+              </div>
+
+              {/* Features */}
+              <div>
+                <p className="text-[10px] font-semibold text-blue-500 uppercase tracking-widest mb-2 flex items-center gap-1">
+                  <Info className="h-3 w-3" /> Fitur
+                </p>
+                <div className="space-y-2">
+                  <div className="bg-blue-950/30 border border-blue-900/30 rounded-xl p-3">
+                    <p className="text-xs font-semibold text-white mb-1.5 flex items-center gap-1.5">
+                      <Zap className="h-3 w-3 text-blue-400" /> AI Analysis
+                    </p>
+                    {['Analisis lalu lintas real-time', 'Identifikasi kemacetan', 'Rekomendasi rute alternatif'].map(f => (
+                      <div key={f} className="flex items-center gap-1.5 text-[10px] text-blue-400 mb-0.5">
+                        <div className="w-1 h-1 rounded-full bg-blue-500" />
+                        {f}
+                      </div>
+                    ))}
                   </div>
-                </Card>
-              ))}
+                  <div className="bg-blue-950/30 border border-blue-900/30 rounded-xl p-3">
+                    <p className="text-xs font-semibold text-white mb-1.5 flex items-center gap-1.5">
+                      <Video className="h-3 w-3 text-blue-400" /> Live Streaming
+                    </p>
+                    {['Video streaming HLS', 'Kontrol playback', 'Optimized untuk mobile'].map(f => (
+                      <div key={f} className="flex items-center gap-1.5 text-[10px] text-blue-400 mb-0.5">
+                        <div className="w-1 h-1 rounded-full bg-blue-500" />
+                        {f}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
+        )}
 
-          {/* Features Info */}
-          <div className="space-y-3">
-            <h3 className="text-sm font-medium text-slate-300 flex items-center gap-2">
-              <Info className="h-4 w-4" />
-              Fitur Aplikasi
-            </h3>
-            
-            <Card className="p-3">
-              <h4 className="font-medium text-sm text-slate-50 mb-2 flex items-center gap-2">
-                <Zap className="h-4 w-4 text-emerald-500" />
-                AI Analysis
-              </h4>
-              <div className="space-y-1 text-xs text-slate-400">
-                <div className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-emerald-500 rounded-full"></div>
-                  <span>Analisis lalu lintas real-time</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-emerald-500 rounded-full"></div>
-                  <span>Identifikasi kemacetan</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-emerald-500 rounded-full"></div>
-                  <span>Rekomendasi rute alternatif</span>
-                </div>
+        {/* Bottom icon strip when collapsed */}
+        {!isOpen && (
+          <div className="flex-1 flex flex-col items-center justify-center gap-4 pb-6">
+            <div className="flex flex-col items-center gap-1">
+              <div className="w-6 h-6 rounded-full bg-blue-600/20 flex items-center justify-center">
+                <Video className="h-3 w-3 text-blue-400" />
               </div>
-            </Card>
-
-            <Card className="p-3">
-              <h4 className="font-medium text-sm text-slate-50 mb-2 flex items-center gap-2">
-                <Video className="h-4 w-4 text-blue-500" />
-                Live Streaming
-              </h4>
-              <div className="space-y-1 text-xs text-slate-400">
-                <div className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-blue-500 rounded-full"></div>
-                  <span>Video streaming HLS</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-blue-500 rounded-full"></div>
-                  <span>Kontrol playback</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-blue-500 rounded-full"></div>
-                  <span>Optimized untuk mobile</span>
-                </div>
+              <span className="text-[9px] text-blue-600 font-bold">{onlineCount}</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <div className="w-6 h-6 rounded-full bg-blue-900/40 flex items-center justify-center">
+                <Eye className="h-3 w-3 text-blue-500" />
               </div>
-            </Card>
+            </div>
           </div>
-        </div>
+        )}
       </aside>
     </>
   )

@@ -2,24 +2,25 @@
 
 import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
-import { Header } from '@/components/layout/header'
 import { Sidebar } from '@/components/layout/sidebar'
+import { SearchBar } from '@/components/traffic/search-bar'
+import { CCTVDetailPanel } from '@/components/traffic/cctv-detail-panel'
 import { cctvLocations } from '@/data/cctv-locations'
 import { CCTVLocation } from '@/types'
 
-// Dynamic import to avoid SSR issues with Leaflet
+// Dynamic import — no SSR for Leaflet
 const TrafficMap = dynamic(
   () => import('@/components/traffic/traffic-map-clean-modern'),
-  { 
+  {
     ssr: false,
     loading: () => (
-      <div className="w-full h-full bg-[#0f172a] flex items-center justify-center">
-        <div className="flex flex-col items-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600 mb-2"></div>
-          <p className="text-slate-400">Memuat peta...</p>
+      <div className="w-full h-full bg-[#081525] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="animate-spin rounded-full h-10 w-10 border-2 border-blue-600 border-t-transparent" />
+          <p className="text-blue-400 text-sm font-medium">Memuat peta...</p>
         </div>
       </div>
-    )
+    ),
   }
 )
 
@@ -28,70 +29,56 @@ export default function HomePage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [selectedLocation, setSelectedLocation] = useState<CCTVLocation | null>(null)
 
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  useEffect(() => { setMounted(true) }, [])
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen)
+  const handleSelect = (loc: CCTVLocation) => {
+    setSelectedLocation(loc)
+    setIsSidebarOpen(false) // close sidebar so panel is unobstructed
   }
 
-  const handleLocationSelect = (lat: number, lon: number, id: string) => {
-    // Find the full CCTV location object
-    const cctvLocation = cctvLocations.find(location => location.id === id)
-    if (cctvLocation) {
-      // If selecting the same location, just focus without changing state
-      if (selectedLocation?.id === id) {
-        return
-      }
-      
-      setSelectedLocation(cctvLocation)
-      // Close sidebar after selection for better UX
-      setIsSidebarOpen(false)
-    }
-  }
-
-  const handlePopupClose = () => {
-    setSelectedLocation(null)
-  }
+  const handleClose = () => setSelectedLocation(null)
 
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-[#0f172a] flex items-center justify-center">
-        <div className="flex flex-col items-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600 mb-2"></div>
-          <p className="text-slate-400">Memuat aplikasi...</p>
+      <div className="min-h-screen bg-[#081525] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="animate-spin rounded-full h-10 w-10 border-2 border-blue-600 border-t-transparent" />
+          <p className="text-blue-400 text-sm font-medium">Memuat aplikasi...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="h-screen bg-[#0f172a] flex flex-col overflow-hidden">
-      {/* Header */}
-      <Header onSidebarToggle={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+    <div className="h-screen bg-[#081525] overflow-hidden relative">
 
-      {/* Main Content */}
-      <div className="flex-1 flex relative overflow-hidden">
-        {/* Map Container */}
-        <div className="flex-1 relative">
-          <div className="absolute inset-0">
-            <TrafficMap 
-              selectedLocation={selectedLocation} 
-              onPopupClose={handlePopupClose}
-            />
-          </div>
-        </div>
-
-        {/* Sidebar - Only visible when open */}
-        <Sidebar 
-          isOpen={isSidebarOpen} 
-          onClose={() => setIsSidebarOpen(false)} 
-          onLocationSelect={(lat, lon, id) => {
-            handleLocationSelect(lat, lon, id)
-          }}
+      {/* Full-screen Map */}
+      <div className="absolute inset-0">
+        <TrafficMap
+          selectedLocation={selectedLocation}
+          onLocationSelect={handleSelect}
+          onPopupClose={handleClose}
+          sidebarWidth={isSidebarOpen ? 288 : 56}
+          panelWidth={selectedLocation ? 320 : 0}
         />
       </div>
+
+      {/* Floating Left Sidebar */}
+      <Sidebar
+        isOpen={isSidebarOpen}
+        onToggle={() => setIsSidebarOpen(prev => !prev)}
+        onLocationSelect={(lat, lon, id) => {
+          const loc = cctvLocations.find((c: CCTVLocation) => c.id === id)
+          if (loc) handleSelect(loc)
+        }}
+      />
+
+      {/* Floating Search Bar — top center */}
+      <SearchBar onSelect={handleSelect} />
+
+      {/* Right Detail Panel — slides in on marker click */}
+      <CCTVDetailPanel location={selectedLocation} onClose={handleClose} />
+
     </div>
   )
 }
