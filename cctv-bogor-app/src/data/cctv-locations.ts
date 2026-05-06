@@ -6,7 +6,7 @@ export const cctvLocations: CCTVLocation[] = [
     nama: 'Tugu Kujang',
     lat: -6.600791,
     lon: 106.805229,
-    stream_url: 'https://restreamer.kotabogor.go.id/memfs/aedb3f80-3355-411f-a8fa-08320766c07a.m3u8',
+    stream_url: 'https://restreamer2.kotabogor.go.id/memfs/5a5cf878-9d9b-4400-a73a-27a5b24a6ec4.m3u8',
     status: 'online',
     description: 'Landmark utama Kota Bogor, area wisata dan pusat aktivitas'
   },
@@ -15,7 +15,7 @@ export const cctvLocations: CCTVLocation[] = [
     nama: 'Depan Kantor Pos',
     lat: -6.600123,
     lon: 106.794764,
-    stream_url: 'https://restreamer.kotabogor.go.id/memfs/7f86312d-fc35-4700-9bd1-2a624b13d111.m3u8',
+    stream_url: 'https://restreamer3.kotabogor.go.id/memfs/e2d12ced-bcc3-4826-b872-97fcce335e93.m3u8',
     status: 'online',
     description: 'Area depan Kantor Pos Besar Bogor, Jalan Ir. H. Juanda'
   },
@@ -24,7 +24,7 @@ export const cctvLocations: CCTVLocation[] = [
     nama: 'Jl. Juanda Arah Kapten Muslihat',
     lat: -6.598047,
     lon: 106.794007,
-    stream_url: 'https://restreamer2.kotabogor.go.id/memfs/3ec6eaf2-4da1-4adb-8c15-0251e69121d6.m3u8',
+    stream_url: 'https://restreamer3.kotabogor.go.id/memfs/519d2368-103e-4e7c-860c-35d66a7f6352.m3u8',
     status: 'online',
     description: 'Jalan Juanda menuju arah Jalan Kapten Muslihat, persimpangan strategis'
   },
@@ -33,16 +33,16 @@ export const cctvLocations: CCTVLocation[] = [
     nama: 'Depan Balaikota Bogor',
     lat: -6.595156,
     lon: 106.794334,
-    stream_url: 'https://restreamer.kotabogor.go.id/memfs/fe1d07cb-9634-4364-bd1c-6846cbce67ef.m3u8',
+    stream_url: 'https://restreamer3.kotabogor.go.id/memfs/e7d14e54-b9bd-474a-8976-dd08baec4498.m3u8',
     status: 'online',
     description: 'Area depan Balaikota Bogor, pusat pemerintahan Kota Bogor'
   },
   {
     id: 'jl-pajajaran',
     nama: 'Jalan Pajajaran',
-    lat: -6.592915,
-    lon: 106.802377,
-    stream_url: 'https://restreamer.kotabogor.go.id/memfs/c048edf7-bce5-4bd2-8329-668ee45734b8.m3u8',
+    lat: -6.596026, 
+    lon: 106.804409,
+    stream_url: 'https://restreamer3.kotabogor.go.id/memfs/6542214a-fe60-4e0f-9330-79106c62ddcc.m3u8',
     status: 'online',
     description: 'Jalan Pajajaran, jalur utama penghubung utara Kota Bogor'
   },

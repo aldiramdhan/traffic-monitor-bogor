@@ -2,12 +2,19 @@
 
 import React, { useState, useCallback } from 'react'
 import {
-  X, Video, ExternalLink, Brain, CheckCircle,
+  X, Video, ExternalLink, CheckCircle,
   AlertCircle, Share2, MapPin, Activity
 } from 'lucide-react'
 import { CCTVLocation } from '@/types'
 import { VideoStream } from './video-stream'
 import { generateGoogleMapsUrl } from '@/lib/utils'
+
+// ─── Custom Icons ─────────────────────────────────────────────────────────────
+const GeminiIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path d="M12 0C11.5432 6.7027 6.7027 11.5432 0 12C6.7027 12.4568 11.5432 17.2973 12 24C12.4568 17.2973 17.2973 12.4568 24 12C17.2973 11.5432 12.4568 6.7027 12 0Z" fill="currentColor"/>
+  </svg>
+)
 
 // ─── AI Analysis Types ────────────────────────────────────────────────────────
 interface AnalysisData {
@@ -91,18 +98,18 @@ const AIAnalysisSection: React.FC<{ location: CCTVLocation }> = ({ location }) =
   return (
     <div className="space-y-3">
       <button
-        className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-sm font-semibold transition-all duration-200 disabled:opacity-60"
+        className="w-full flex items-center justify-center gap-2 py-3 px-6 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium shadow-md transition-all duration-200 disabled:opacity-60"
         onClick={analyzeTraffic}
         disabled={isLoading}
       >
         {isLoading ? (
           <>
-            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             Menganalisis...
           </>
         ) : (
           <>
-            <Brain className="h-4 w-4" />
+            <GeminiIcon className="h-4 w-4 text-white" />
             Analisis Cerdas AI
           </>
         )}
@@ -119,48 +126,48 @@ const AIAnalysisSection: React.FC<{ location: CCTVLocation }> = ({ location }) =
           ) : analysisData ? (
             <>
               {/* Traffic Status */}
-              <div className="bg-blue-950/30 border border-blue-900/30 rounded-xl p-3">
-                <div className="flex items-center gap-2 mb-2">
-                  <Activity className="h-3.5 w-3.5 text-blue-500" />
-                  <span className="text-[10px] font-semibold text-blue-500 uppercase tracking-widest">Status Lalu Lintas</span>
+              <div className="bg-slate-800 rounded-2xl p-4 shadow-sm">
+                <div className="flex items-center gap-2 mb-3">
+                  <Activity className="h-4 w-4 text-blue-400" />
+                  <span className="text-xs font-medium text-slate-300">Status Lalu Lintas</span>
                   {analysisData.cached && (
-                    <span className="ml-auto text-[10px] text-blue-700 italic">dari cache</span>
+                    <span className="ml-auto text-[10px] text-slate-500 italic">dari cache</span>
                   )}
                 </div>
-                <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border ${labelConfig.bg} ${labelConfig.text} ${labelConfig.border}`}>
+                <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border ${labelConfig.bg} ${labelConfig.text} ${labelConfig.border}`}>
                   <div className={`w-2 h-2 rounded-full ${labelConfig.dot} animate-pulse`} />
                   <span className="text-sm font-bold">{analysisData.traffic_label}</span>
                 </div>
               </div>
 
               {/* Recommendation */}
-              <div className="bg-blue-950/30 border border-blue-900/30 rounded-xl p-3">
+              <div className="bg-slate-800 rounded-2xl p-4 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
-                  <CheckCircle className="h-3.5 w-3.5 text-blue-500" />
-                  <span className="text-[10px] font-semibold text-blue-500 uppercase tracking-widest">Rekomendasi</span>
+                  <CheckCircle className="h-4 w-4 text-blue-400" />
+                  <span className="text-xs font-medium text-slate-300">Rekomendasi</span>
                 </div>
-                <p className="text-xs text-slate-300 leading-relaxed">{analysisData.recommendation}</p>
+                <p className="text-sm text-slate-300 leading-relaxed">{analysisData.recommendation}</p>
               </div>
 
               {/* Alternative Routes */}
-              <div className="bg-blue-950/30 border border-blue-900/30 rounded-xl p-3">
-                <div className="flex items-center gap-2 mb-2">
-                  <MapPin className="h-3.5 w-3.5 text-blue-500" />
-                  <span className="text-[10px] font-semibold text-blue-500 uppercase tracking-widest">Jalur Alternatif</span>
+              <div className="bg-slate-800 rounded-2xl p-4 shadow-sm">
+                <div className="flex items-center gap-2 mb-3">
+                  <MapPin className="h-4 w-4 text-blue-400" />
+                  <span className="text-xs font-medium text-slate-300">Jalur Alternatif</span>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {analysisData.alternative_routes.map((route, i) => (
-                    <div key={i} className="bg-[#0d1b2e] border border-blue-900/40 rounded-lg p-2.5 flex items-start gap-2">
+                    <div key={i} className="bg-slate-800/50 border border-slate-700 rounded-2xl p-3 flex items-start gap-3">
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-semibold text-slate-100">{route.route_name}</p>
-                        <p className="text-[10px] text-blue-500 mt-0.5">{route.description}</p>
-                        <p className="text-[10px] text-blue-400 font-medium mt-1">⏱ {route.estimated_time}</p>
+                        <p className="text-sm font-medium text-slate-200">{route.route_name}</p>
+                        <p className="text-xs text-slate-400 mt-1">{route.description}</p>
+                        <p className="text-xs text-blue-400 font-medium mt-1.5">⏱ {route.estimated_time}</p>
                       </div>
                       <a
                         href={route.maps_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-shrink-0 px-2.5 py-1 bg-blue-800/40 hover:bg-blue-700/50 text-blue-300 text-[10px] font-semibold rounded-lg border border-blue-700/40 transition-colors"
+                        className="flex-shrink-0 px-3 py-1.5 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 text-xs font-medium rounded-full transition-colors"
                       >
                         Maps
                       </a>
@@ -217,28 +224,28 @@ export function CCTVDetailPanel({ location, onClose }: CCTVDetailPanelProps) {
     <div
       className={`
         fixed top-0 right-0 h-full z-[900]
-        w-80 xl:w-96
-        bg-[#0d1b2e]/97 backdrop-blur-md
-        border-l border-blue-900/50
+        w-80 xl:w-[400px]
+        bg-[#1e1e1e] text-slate-200
+        rounded-l-3xl
         shadow-[-8px_0_32px_rgba(0,0,0,0.5)]
         flex flex-col
-        transition-transform duration-300 ease-in-out
+        transition-transform duration-300 cubic-bezier(0.2,0,0,1)
         ${isVisible ? 'translate-x-0' : 'translate-x-full'}
       `}
     >
       {location && (
         <div key={key} className="flex flex-col h-full">
           {/* Header */}
-          <div className="flex items-start gap-3 p-4 border-b border-blue-900/40 flex-shrink-0">
+          <div className="flex items-start gap-4 p-5 border-b border-white/10 flex-shrink-0">
             <div className="flex-1 min-w-0">
               {/* Status row */}
-              <div className="flex items-center gap-2 mb-1.5">
-                <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[10px] font-bold uppercase tracking-wide ${
+              <div className="flex items-center gap-3 mb-3">
+                <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium tracking-wide ${
                   location.status === 'online'
-                    ? 'bg-blue-950/60 text-blue-300 border-blue-700/60'
+                    ? 'bg-blue-500/20 text-blue-300'
                     : location.status === 'offline'
-                    ? 'bg-red-950/60 text-red-400 border-red-700/60'
-                    : 'bg-amber-950/60 text-amber-400 border-amber-700/60'
+                    ? 'bg-red-500/20 text-red-400'
+                    : 'bg-amber-500/20 text-amber-400'
                 }`}>
                   <div className={`w-1.5 h-1.5 rounded-full ${
                     location.status === 'online' ? 'bg-blue-400 animate-pulse' :
@@ -246,24 +253,20 @@ export function CCTVDetailPanel({ location, onClose }: CCTVDetailPanelProps) {
                   }`} />
                   {location.status}
                 </div>
-                <div className="flex items-center gap-1 text-[10px] text-blue-600">
-                  <MapPin className="h-2.5 w-2.5" />
-                  <span className="font-mono">{location.lat.toFixed(4)}, {location.lon.toFixed(4)}</span>
-                </div>
               </div>
               {/* Title */}
-              <h2 className="text-base font-bold text-white leading-tight">{location.nama}</h2>
+              <h2 className="text-xl font-medium text-slate-100 leading-tight">{location.nama}</h2>
               {/* Description */}
               {location.description && (
-                <p className="text-xs text-blue-400 mt-1 leading-relaxed">{location.description}</p>
+                <p className="text-sm text-slate-400 mt-1.5 leading-relaxed">{location.description}</p>
               )}
             </div>
             {/* Close */}
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-full bg-blue-900/30 hover:bg-red-900/40 border border-blue-900/50 hover:border-red-800/50 text-blue-400 hover:text-red-400 flex items-center justify-center transition-all duration-200 flex-shrink-0"
+              className="w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors duration-200 flex-shrink-0"
             >
-              <X className="h-4 w-4" />
+              <X className="h-5 w-5" />
             </button>
           </div>
 
@@ -272,16 +275,16 @@ export function CCTVDetailPanel({ location, onClose }: CCTVDetailPanelProps) {
 
             {/* Video Stream */}
             {location.status === 'online' && location.stream_url ? (
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <Video className="h-3.5 w-3.5 text-blue-500" />
-                  <span className="text-[10px] font-semibold text-blue-500 uppercase tracking-widest">Live Stream</span>
-                  <div className="ml-auto flex items-center gap-1">
-                    <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                    <span className="text-[10px] text-red-400 font-semibold">REC</span>
+              <div className="bg-slate-800 rounded-3xl p-2 pb-4 shadow-sm">
+                <div className="flex items-center gap-2 mb-3 px-3 pt-2">
+                  <Video className="h-4 w-4 text-blue-400" />
+                  <span className="text-xs font-medium text-slate-300">Live Stream</span>
+                  <div className="ml-auto flex items-center gap-1.5">
+                    <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                    <span className="text-[10px] text-red-400 font-bold">REC</span>
                   </div>
                 </div>
-                <div className="relative rounded-xl overflow-hidden bg-black border border-blue-900/40 shadow-lg">
+                <div className="relative rounded-2xl overflow-hidden bg-black shadow-md">
                   <div className="relative w-full aspect-video">
                     <VideoStream
                       streamUrl={location.stream_url}
@@ -294,13 +297,13 @@ export function CCTVDetailPanel({ location, onClose }: CCTVDetailPanelProps) {
                 </div>
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center gap-3 py-8 bg-blue-950/20 border border-dashed border-blue-900/40 rounded-xl">
-                <div className="w-10 h-10 rounded-full bg-blue-900/30 border border-blue-900/50 flex items-center justify-center">
-                  <Video className="h-5 w-5 text-blue-700" />
+              <div className="flex flex-col items-center justify-center gap-3 py-8 bg-slate-800/30 border border-dashed border-slate-700/80 rounded-2xl">
+                <div className="w-10 h-10 rounded-full bg-slate-800/60 border border-slate-700 flex items-center justify-center shadow-sm">
+                  <Video className="h-5 w-5 text-slate-500" />
                 </div>
                 <div className="text-center">
-                  <p className="text-sm font-semibold text-blue-400">Stream Tidak Tersedia</p>
-                  <p className="text-xs text-blue-700 mt-0.5">
+                  <p className="text-sm font-semibold text-slate-400">Stream Tidak Tersedia</p>
+                  <p className="text-xs text-slate-500 mt-0.5">
                     {location.status === 'maintenance' ? 'CCTV dalam pemeliharaan' : 'CCTV sedang offline'}
                   </p>
                 </div>
@@ -308,7 +311,7 @@ export function CCTVDetailPanel({ location, onClose }: CCTVDetailPanelProps) {
             )}
 
             {/* Divider */}
-            <div className="border-t border-blue-900/30" />
+            <div className="border-t border-white/10" />
 
             {/* AI Analysis */}
             {location.status === 'online' && <AIAnalysisSection location={location} />}
@@ -316,26 +319,26 @@ export function CCTVDetailPanel({ location, onClose }: CCTVDetailPanelProps) {
           </div>
 
           {/* Footer actions */}
-          <div className="flex-shrink-0 p-4 border-t border-blue-900/40 grid grid-cols-2 gap-2">
+          <div className="flex-shrink-0 p-5 border-t border-white/10 grid grid-cols-2 gap-3">
             <button
-              className="flex items-center justify-center gap-2 py-2.5 rounded-xl border border-blue-900/50 bg-blue-950/30 hover:bg-blue-900/40 text-blue-300 text-xs font-semibold transition-all duration-200"
+              className="flex items-center justify-center gap-2 py-3 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium transition-colors duration-200"
               onClick={() => window.open(generateGoogleMapsUrl(location.nama), '_blank')}
             >
-              <ExternalLink className="h-3.5 w-3.5" />
+              <ExternalLink className="h-4 w-4" />
               Google Maps
             </button>
             <button
-              className={`flex items-center justify-center gap-2 py-2.5 rounded-xl border text-xs font-semibold transition-all duration-200 ${
+              className={`flex items-center justify-center gap-2 py-3 rounded-full text-sm font-medium transition-colors duration-200 ${
                 copied
-                  ? 'border-blue-700/60 bg-blue-900/50 text-blue-300'
-                  : 'border-blue-900/50 bg-blue-950/30 hover:bg-blue-900/40 text-blue-300'
+                  ? 'bg-blue-600/20 text-blue-400'
+                  : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
               }`}
               onClick={handleShare}
             >
               {copied ? (
-                <><CheckCircle className="h-3.5 w-3.5" /> Tersalin!</>
+                <><CheckCircle className="h-4 w-4" /> Tersalin!</>
               ) : (
-                <><Share2 className="h-3.5 w-3.5" /> Bagikan</>
+                <><Share2 className="h-4 w-4" /> Bagikan</>
               )}
             </button>
           </div>
