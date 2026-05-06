@@ -77,25 +77,26 @@ const SSA_ROUTE: [number, number][] = [
 // Error Boundary
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode; fallback?: React.ReactNode },
-  { hasError: boolean }
+  { hasError: boolean; error: Error | null }
 > {
   constructor(props: { children: React.ReactNode; fallback?: React.ReactNode }) {
     super(props)
-    this.state = { hasError: false }
+    this.state = { hasError: false, error: null }
   }
-  static getDerivedStateFromError() { return { hasError: true } }
+  static getDerivedStateFromError(error: Error) { return { hasError: true, error } }
   componentDidCatch(error: Error, info: React.ErrorInfo) {
     console.error('Map Error:', error, info)
   }
   render() {
     if (this.state.hasError) {
       return this.props.fallback || (
-        <div className="h-full w-full flex items-center justify-center bg-red-950/20 rounded-xl border border-red-900/50">
+        <div className="h-full w-full flex items-center justify-center bg-red-950/20 rounded-xl border border-red-900/50 overflow-auto">
           <div className="text-center p-6">
             <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-3" />
             <p className="text-red-400 font-medium mb-2">Terjadi kesalahan saat memuat peta</p>
+            <p className="text-red-300 text-xs text-left whitespace-pre-wrap max-w-xl mb-4 bg-black/50 p-4 rounded">{this.state.error?.message}</p>
             <Button
-              onClick={() => this.setState({ hasError: false })}
+              onClick={() => this.setState({ hasError: false, error: null })}
               variant="outline"
               size="sm"
               className="border-red-900 text-red-400 hover:bg-red-950/50"

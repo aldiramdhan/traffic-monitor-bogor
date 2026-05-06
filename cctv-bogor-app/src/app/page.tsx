@@ -21,9 +21,9 @@ const TrafficMap = dynamic(
         <div className="flex flex-col items-center gap-5">
           <div className="relative flex items-center justify-center">
             {/* Background track */}
-            <div className="absolute w-12 h-12 rounded-full border-[3.5px] border-white/[0.05]" />
+            <div className="absolute w-12 h-12 rounded-full border-4 border-white/5" />
             {/* Circular progress */}
-            <div className="w-12 h-12 rounded-full border-[3.5px] border-blue-500 border-t-transparent animate-spin" />
+            <div className="w-12 h-12 rounded-full border-4 border-blue-500 border-t-transparent animate-spin" />
           </div>
           <p className="text-slate-300 text-[15px] tracking-wide font-medium">Memuat peta...</p>
         </div>
@@ -40,7 +40,7 @@ export default function HomePage() {
 
   useEffect(() => { setMounted(true) }, [])
 
-  const handleSelect = (loc: CCTVLocation) => {
+  const handleSelect = (loc: CCTVLocation | null) => {
     setSelectedLocation(loc)
     setIsSidebarOpen(false) // close sidebar so panel is unobstructed
   }
@@ -69,9 +69,9 @@ export default function HomePage() {
         <div className="flex flex-col items-center gap-5">
           <div className="relative flex items-center justify-center">
             {/* Background track */}
-            <div className="absolute w-12 h-12 rounded-full border-[3.5px] border-white/[0.05]" />
+            <div className="absolute w-12 h-12 rounded-full border-4 border-white/5" />
             {/* Circular progress */}
-            <div className="w-12 h-12 rounded-full border-[3.5px] border-blue-500 border-t-transparent animate-spin" />
+            <div className="w-12 h-12 rounded-full border-4 border-blue-500 border-t-transparent animate-spin" />
           </div>
           <p className="text-slate-300 text-[15px] tracking-wide font-medium">Memuat aplikasi...</p>
         </div>
